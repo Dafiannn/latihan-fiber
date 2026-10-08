@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/dafian/siakad-mini/internal/config"
+	"github.com/dafian/siakad-mini/internal/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 )
@@ -21,12 +22,8 @@ func main() {
 	// Inisialisasi Fiber app
 	app := fiber.New()
 
-	// Route sederhana untuk test server
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.JSON(fiber.Map{
-			"message": "Welcome to SIAKAD Mini API",
-		})
-	})
+	// Daftarkan semua routes
+	routes.SetupRoutes(app)
 
 	// Jalankan server di port 3000
 	log.Fatal(app.Listen(":3000"))
