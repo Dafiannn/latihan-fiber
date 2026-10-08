@@ -6,15 +6,9 @@ import (
 
 	"github.com/dafian/siakad-mini/internal/config"
 	"github.com/dafian/siakad-mini/internal/models"
+	"github.com/dafian/siakad-mini/internal/utils"
 	"github.com/joho/godotenv"
-	"golang.org/x/crypto/bcrypt"
 )
-
-// HashPassword mengenkripsi password menggunakan bcrypt
-func HashPassword(password string) string {
-	bytes, _ := bcrypt.GenerateFromPassword([]byte(password), 14)
-	return string(bytes)
-}
 
 func main() {
 	// 1. Load env dan konek DB
@@ -28,7 +22,7 @@ func main() {
 	log.Println("Memulai proses seeding data...")
 
 	// 2. Buat 1 Admin (jika belum ada)
-	adminPassword := HashPassword("admin123")
+	adminPassword := utils.HashPassword("admin123")
 	admin := models.User{
 		Email:    "admin@siakad.com",
 		Password: adminPassword,
@@ -41,7 +35,7 @@ func main() {
 	for i := 1; i <= 20; i++ {
 		nim := fmt.Sprintf("18722100%04d", i) // Format NIM 12 digit
 		email := fmt.Sprintf("student%d@siakad.com", i)
-		hashedPassword := HashPassword(nim) // Syarat PDF: password awal mahasiswa = NIM
+		hashedPassword := utils.HashPassword(nim) // Syarat PDF: password awal mahasiswa = NIM
 
 		user := models.User{
 			Email:    email,
