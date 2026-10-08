@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/dafian/siakad-mini/internal/config"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 )
@@ -13,6 +14,9 @@ func main() {
 	if err != nil {
 		log.Println("Warning: Error loading .env file, using default env vars")
 	}
+
+	// Inisialisasi Database (beserta Auto Migrate)
+	config.ConnectDB()
 
 	// Inisialisasi Fiber app
 	app := fiber.New()
