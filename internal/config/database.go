@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -13,16 +12,18 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-	// Membaca konfigurasi dari file .env
-	host := os.Getenv("DB_HOST")
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	dbname := os.Getenv("DB_NAME")
-	port := os.Getenv("DB_PORT")
+	// Membaca koneksi langsung menggunakan Connection String (URI)
+	dsn := os.Getenv("DB_URL")
+	if dsn == "" {
+		log.Fatal("❌ DB_URL belum diatur di file .env")
+	}
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta", host, user, password, dbname, port)
+	// Karena kita menggunakan Connection Pooler (Supabase IPv4), kita harus mematikan fitur prepared statements bawaan GORM
+	db, err := gorm.Open(postgres.New(postgres.Config{
+		DSN:                  dsn,
+		PreferSimpleProtocol: true, // Wajib true saat pakai PgBouncer / Supabase Pooler
+	}), &gorm.Config{})
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("❌ Gagal terhubung ke Database: \n", err)
 	}
