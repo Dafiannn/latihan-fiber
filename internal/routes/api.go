@@ -22,4 +22,13 @@ func SetupRoutes(app *fiber.App) {
 	students.Get("/:id", handlers.GetStudentByID)                            // GET Detail (Admin/Self)
 	students.Put("/:id", middlewares.IsAdmin(), handlers.UpdateStudent)      // PUT (Admin)
 	students.Delete("/:id", middlewares.IsAdmin(), handlers.DeleteStudent)   // DELETE (Admin)
+
+	// 8. Courses Route
+	courses := api.Group("/courses", middlewares.Protected())
+	courses.Get("/", handlers.GetCourses)
+
+	// 9 & 10. Enrollments (KRS) Routes
+	enrollments := api.Group("/enrollments", middlewares.Protected())
+	enrollments.Post("/", handlers.CreateEnrollment)
+	enrollments.Delete("/:id", handlers.DeleteEnrollment)
 }
